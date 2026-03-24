@@ -77,7 +77,7 @@ const HeroImage = forwardRef<ImageHandle>(function HeroImage(_, ref) {
   }, []);
 
   return (
-    <div ref={wrapperRef} className="w-full px-6 lg:px-[142px]">
+    <div ref={wrapperRef} className="w-full" style={{ padding: "0 8vw" }}>
       <div
         ref={containerRef}
         className="relative overflow-hidden opacity-0 w-full"

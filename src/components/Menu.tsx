@@ -24,7 +24,8 @@ export default function Menu() {
     const nav = navRef.current;
     if (!overlay || !nav) return;
 
-    const links = nav.querySelectorAll("a");
+    const links = nav.querySelectorAll("[data-nav-link]");
+    const footer = nav.querySelector("[data-nav-footer]");
 
     const tl = gsap.timeline({ paused: true });
 
@@ -44,6 +45,12 @@ export default function Menu() {
         links,
         { yPercent: 100, opacity: 0 },
         { yPercent: 0, opacity: 1, stagger: 0.05, duration: 0.4, ease: "power2.out" },
+        "-=0.2"
+      )
+      .fromTo(
+        footer,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
         "-=0.2"
       );
 
@@ -101,36 +108,52 @@ export default function Menu() {
       {/* Navigation panel */}
       <nav
         ref={navRef}
-        className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-[#1a1a1a] text-white flex-col justify-center px-12 hidden"
+        className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-xl bg-[#1a1a1a] text-white flex-col justify-between px-12 py-16 hidden"
       >
+        {/* Close button */}
         <button
-          className="absolute top-4 right-6 lg:right-12 flex items-center gap-2 text-sm font-medium cursor-pointer text-white"
+          className="absolute top-4 right-6 lg:right-12 flex items-center gap-2 text-sm font-medium cursor-pointer text-white/70 hover:text-white transition-colors"
           onClick={toggle}
           aria-label="Close menu"
         >
           <span>Close</span>
           <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
             fill="none"
-            style={{ transform: "rotate(45deg)" }}
           >
-            <line x1="6" y1="0" x2="6" y2="12" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="0" y1="6" x2="12" y2="6" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" strokeWidth="1.5" />
+            <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </button>
-        <div className="flex flex-col gap-8">
+
+        {/* Nav links */}
+        <div className="flex flex-col gap-6 mt-20">
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-4xl lg:text-5xl font-bold tracking-tight hover:opacity-70 transition-opacity"
-              onClick={toggle}
-            >
-              {link.label}
-            </a>
+            <div key={link.label} className="overflow-hidden">
+              <a
+                data-nav-link
+                href={link.href}
+                className="block text-4xl lg:text-5xl font-semibold tracking-tight text-white/90 hover:text-white transition-colors"
+                onClick={toggle}
+              >
+                {link.label}
+              </a>
+            </div>
           ))}
+        </div>
+
+        {/* Footer */}
+        <div data-nav-footer className="flex flex-col gap-6">
+          <div className="flex flex-col gap-1">
+            <a href="#" className="text-sm text-white/50 hover:text-white/80 transition-colors">Instagram</a>
+            <a href="#" className="text-sm text-white/50 hover:text-white/80 transition-colors">LinkedIn</a>
+          </div>
+          <div className="flex items-center justify-between text-xs text-white/30">
+            <span>©2026 Righteous</span>
+            <span>Creative · Tech</span>
+          </div>
         </div>
       </nav>
     </>

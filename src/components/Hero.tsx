@@ -9,6 +9,14 @@ import useScrollExpand from "@/hooks/useScrollExpand";
 import useHeroParallax from "@/hooks/useHeroParallax";
 import useHeroDarken from "@/hooks/useHeroDarken";
 
+/**
+ * Hero layout proportions matched to Onbox Creative:
+ * - Wordmark: top ~10vh, width ~92vw
+ * - Gap wordmark→tagline: ~5vh
+ * - Tagline: 16px, weight 500, uppercase
+ * - Gap tagline→image: ~5vh
+ * - Image: side padding ~8vw, 16:9 aspect, 12px border-radius
+ */
 export default function Hero() {
   const wordmarkRef = useRef<WordmarkHandle>(null);
   const taglineRef = useRef<TaglineHandle>(null);
@@ -16,7 +24,7 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [spacerHeight, setSpacerHeight] = useState("250vh");
+  const [spacerHeight, setSpacerHeight] = useState("150vh");
 
   // Dynamically calculate spacer height based on image position
   useEffect(() => {
@@ -28,10 +36,10 @@ export default function Hero() {
     const imageOffset = imageRect.top - heroRect.top;
     const imageHeight = imageRect.height;
 
-    // Spacer = enough to scroll the image to viewport top + enough for the
-    // work section to fully cover the hero image
-    const totalHeight = imageOffset + imageHeight + window.innerHeight;
-    setSpacerHeight(`${totalHeight}px`);
+    // Spacer height = distance to scroll the image to viewport top
+    // + the image height (for the work section to cover it)
+    const scrollDistance = imageOffset + imageHeight;
+    setSpacerHeight(`${scrollDistance}px`);
   }, []);
 
   // Wire up animations
@@ -44,16 +52,16 @@ export default function Hero() {
     <>
       {/* Fixed hero layer — sits behind everything */}
       <div ref={heroRef} className="fixed inset-0 z-0">
-        <div className="relative min-h-screen pt-10 lg:pt-12 flex flex-col items-center">
-          {/* Wordmark */}
+        <div className="relative min-h-screen flex flex-col items-center" style={{ paddingTop: "10vh" }}>
+          {/* Wordmark — 92vw wide like Onbox */}
           <HeroWordmark ref={wordmarkRef} />
 
           {/* Tagline */}
-          <div className="mt-6 lg:mt-8 flex justify-center mb-10 lg:mb-12">
+          <div className="flex justify-center" style={{ marginTop: "5vh", marginBottom: "5vh" }}>
             <HeroTagline ref={taglineRef} />
           </div>
 
-          {/* Image */}
+          {/* Image — 8vw side padding like Onbox */}
           <HeroImage ref={imageRef} />
 
           {/* Dark overlay for parallax phase */}
@@ -65,7 +73,11 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Spacer — takes up the hero's scroll distance in normal flow */}
+      {/* Initial viewport spacer — holds the hero's place in document flow.
+          The parallax spacer sits below this so ScrollTrigger doesn't fire at scroll 0. */}
+      <div className="relative z-0 pointer-events-none" style={{ height: "100vh" }} />
+
+      {/* Parallax spacer — scroll through this drives the expand + parallax animations */}
       <div
         ref={spacerRef}
         data-hero-spacer

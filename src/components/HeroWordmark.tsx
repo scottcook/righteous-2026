@@ -1,16 +1,17 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useRef } from "react";
-import WORDMARK_PATHS from "./wordmark-paths";
+
+const LETTERS = ["R", "i", "g", "h", "t", "e", "o", "u", "s"];
 
 export interface WordmarkHandle {
   container: HTMLDivElement | null;
-  letters: SVGPathElement[];
+  letters: HTMLSpanElement[];
 }
 
 const HeroWordmark = forwardRef<WordmarkHandle>(function HeroWordmark(_, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const letterRefs = useRef<SVGPathElement[]>([]);
+  const letterRefs = useRef<HTMLSpanElement[]>([]);
 
   useImperativeHandle(ref, () => ({
     get container() {
@@ -22,30 +23,29 @@ const HeroWordmark = forwardRef<WordmarkHandle>(function HeroWordmark(_, ref) {
   }));
 
   return (
-    <div ref={containerRef} className="w-full px-4 lg:px-8">
-      <svg
-        viewBox="-5 -155 875 200"
-        className="w-full h-auto"
-        overflow="hidden"
-        preserveAspectRatio="xMidYMid meet"
+    <div ref={containerRef} className="w-full overflow-hidden" style={{ padding: "0 4vw" }}>
+      <div
+        className="flex justify-center leading-none"
+        style={{
+          fontFamily: '"Canela", Georgia, serif',
+          fontWeight: 900,
+          fontSize: "clamp(80px, 13vw, 220px)",
+          letterSpacing: "-0.03em",
+        }}
       >
-        <clipPath id="wordmark-clip">
-          <rect x="-5" y="-155" width="875" height="200" />
-        </clipPath>
-        <g clipPath="url(#wordmark-clip)">
-          {WORDMARK_PATHS.map((d, i) => (
-            <path
-              key={i}
-              ref={(el) => {
-                if (el) letterRefs.current[i] = el;
-              }}
-              d={d}
-              fill="currentColor"
-              style={{ opacity: 0 }}
-            />
-          ))}
-        </g>
-      </svg>
+        {LETTERS.map((letter, i) => (
+          <span
+            key={i}
+            ref={(el) => {
+              if (el) letterRefs.current[i] = el;
+            }}
+            className="inline-block"
+            style={{ opacity: 0 }}
+          >
+            {letter}
+          </span>
+        ))}
+      </div>
     </div>
   );
 });

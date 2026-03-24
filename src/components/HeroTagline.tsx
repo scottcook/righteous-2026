@@ -21,7 +21,7 @@ const HeroTagline = forwardRef<TaglineHandle>(function HeroTagline(_, ref) {
         ref={pRef}
         className="text-base lg:text-lg font-semibold tracking-tight text-muted text-center leading-relaxed max-w-[320px] lg:max-w-none opacity-0 uppercase font-[family-name:var(--font-hanken)]"
       >
-        Your lean, overhead-free creative-tech partner
+        Your lean, overhead-free creative development partner
         <br className="hidden lg:inline" />
         built for today&apos;s AI-fueled market
       </p>

@@ -2,16 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import WORDMARK_PATHS from "./wordmark-paths";
 
 export default function HeroNav() {
   const logoRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Watch the hero section's scroll progress to determine when the wordmark
-    // has left the viewport. The hero is fixed and translated via GSAP, so we
-    // use a scroll-based trigger on the spacer.
     const spacer = document.querySelector("[data-hero-spacer]");
     if (!spacer) return;
 
@@ -38,15 +34,16 @@ export default function HeroNav() {
 
   return (
     <div ref={logoRef} className="overflow-hidden" style={{ transform: "translateY(-120%)" }}>
-      <svg
-        viewBox="-5 -155 875 200"
-        className="h-5 w-auto"
-        preserveAspectRatio="xMidYMid meet"
+      <span
+        className="text-base font-black leading-none"
+        style={{
+          fontFamily: '"Canela", Georgia, serif',
+          fontWeight: 900,
+          letterSpacing: "-0.02em",
+        }}
       >
-        {WORDMARK_PATHS.map((d, i) => (
-          <path key={i} d={d} fill="currentColor" />
-        ))}
-      </svg>
+        Righteous
+      </span>
     </div>
   );
 }
