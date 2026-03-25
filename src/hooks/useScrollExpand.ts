@@ -16,11 +16,13 @@ export default function useScrollExpand(
     const containerEl = image.container;
     const wrapperEl = image.wrapper;
 
+    // Expand should complete as the image reaches full width.
+    // Use a fixed scroll distance relative to the viewport.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: spacerEl,
         start: "top bottom",
-        end: "top top",
+        end: `+=${window.innerHeight}px`,
         scrub: true,
       },
     });

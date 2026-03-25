@@ -81,6 +81,7 @@ const HeroImage = forwardRef<ImageHandle>(function HeroImage(_, ref) {
       <div
         ref={containerRef}
         className="relative overflow-hidden opacity-0 w-full"
+        data-theme="dark"
         style={{ aspectRatio: "16 / 9", borderRadius: "12px" }}
       >
         {HERO_IMAGES.map((img, i) => (

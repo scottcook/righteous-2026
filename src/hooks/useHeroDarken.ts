@@ -18,7 +18,7 @@ export default function useHeroDarken(
       end: "bottom top",
       scrub: true,
       onUpdate: (self) => {
-        gsap.set(overlay, { opacity: self.progress * 0.4 });
+        gsap.set(overlay, { opacity: self.progress * 0.3 });
       },
     });
 

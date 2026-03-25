@@ -52,21 +52,24 @@ export default function useHeroAnimation(
       "-=0.3"
     );
 
-    // Re-trigger wordmark animation when scrolling back into view
+    // Re-trigger wordmark + tagline animations when scrolling back into view.
+    // Use gsap.ticker instead of ScrollTrigger because the hero is fixed
+    // and moves via translateY — ScrollTrigger can't track that accurately.
     const wordmarkContainer = wordmark.current.container;
-    if (wordmarkContainer) {
-      const wordmarkBottom = wordmarkContainer.getBoundingClientRect().bottom;
+    let wordmarkHidden = false;
+    let taglineHidden = false;
 
-      ScrollTrigger.create({
-        trigger: document.documentElement,
-        start: "top top",
-        end: `${wordmarkBottom + 200}px top`,
-        onLeave: () => {
-          // Hide letters when wordmark has scrolled out
+    const checkElements = () => {
+      // Wordmark
+      if (wordmarkContainer) {
+        const rect = wordmarkContainer.getBoundingClientRect();
+        const isOffScreen = rect.bottom < 0;
+
+        if (isOffScreen && !wordmarkHidden) {
+          wordmarkHidden = true;
           gsap.set(letters, { opacity: 0, yPercent: 130 });
-        },
-        onEnterBack: () => {
-          // Re-animate letters when scrolling back
+        } else if (!isOffScreen && wordmarkHidden) {
+          wordmarkHidden = false;
           gsap.fromTo(
             letters,
             { yPercent: 130, opacity: 0 },
@@ -78,12 +81,33 @@ export default function useHeroAnimation(
               ease: "power3.out",
             }
           );
-        },
-      });
-    }
+        }
+      }
+
+      // Tagline
+      if (taglineEl) {
+        const rect = taglineEl.getBoundingClientRect();
+        const isOffScreen = rect.bottom < 0;
+
+        if (isOffScreen && !taglineHidden) {
+          taglineHidden = true;
+          gsap.set(taglineEl, { opacity: 0, y: 20 });
+        } else if (!isOffScreen && taglineHidden) {
+          taglineHidden = false;
+          gsap.fromTo(
+            taglineEl,
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "power2.out", delay: 0.5 }
+          );
+        }
+      }
+    };
+
+    gsap.ticker.add(checkElements);
 
     return () => {
       tl.kill();
+      gsap.ticker.remove(checkElements);
     };
   }, [wordmark, tagline, image]);
 }

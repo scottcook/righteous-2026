@@ -22,6 +22,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     });
 
     lenisRef.current = lenis;
+    // Expose globally so other components (e.g. Menu) can stop/start scroll
+    (window as unknown as Record<string, unknown>).__lenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -34,6 +36,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      delete (window as unknown as Record<string, unknown>).__lenis;
     };
   }, []);
 

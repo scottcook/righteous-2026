@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import HeroWordmark, { type WordmarkHandle } from "./HeroWordmark";
 import HeroTagline, { type TaglineHandle } from "./HeroTagline";
 import HeroImage, { type ImageHandle } from "./HeroImage";
@@ -8,6 +8,7 @@ import useHeroAnimation from "@/hooks/useHeroAnimation";
 import useScrollExpand from "@/hooks/useScrollExpand";
 import useHeroParallax from "@/hooks/useHeroParallax";
 import useHeroDarken from "@/hooks/useHeroDarken";
+import { ScrollTrigger } from "@/lib/gsap";
 
 /**
  * Hero layout proportions matched to Onbox Creative:
@@ -26,8 +27,9 @@ export default function Hero() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [spacerHeight, setSpacerHeight] = useState("150vh");
 
-  // Dynamically calculate spacer height based on image position
-  useEffect(() => {
+  // Dynamically calculate spacer height based on image position.
+  // Recalculate on resize so the layout stays correct.
+  const calcSpacer = useCallback(() => {
     const image = imageRef.current;
     if (!image?.container || !heroRef.current) return;
 
@@ -36,11 +38,20 @@ export default function Hero() {
     const imageOffset = imageRect.top - heroRect.top;
     const imageHeight = imageRect.height;
 
-    // Spacer height = distance to scroll the image to viewport top
-    // + the image height (for the work section to cover it)
-    const scrollDistance = imageOffset + imageHeight;
-    setSpacerHeight(`${scrollDistance}px`);
+    setSpacerHeight(`${imageOffset + imageHeight * 0.5}px`);
   }, []);
+
+  useEffect(() => {
+    calcSpacer();
+
+    const onResize = () => {
+      calcSpacer();
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [calcSpacer]);
 
   // Wire up animations
   useHeroAnimation(wordmarkRef, taglineRef, imageRef);
@@ -51,8 +62,8 @@ export default function Hero() {
   return (
     <>
       {/* Fixed hero layer — sits behind everything */}
-      <div ref={heroRef} className="fixed inset-0 z-0">
-        <div className="relative min-h-screen flex flex-col items-center" style={{ paddingTop: "10vh" }}>
+      <div ref={heroRef} className="fixed inset-0 z-0 bg-background">
+        <div className="relative min-h-screen flex flex-col items-center" style={{ paddingTop: "calc(10vh - 15px)" }}>
           {/* Wordmark — 92vw wide like Onbox */}
           <HeroWordmark ref={wordmarkRef} />
 
