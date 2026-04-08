@@ -1,0 +1,69 @@
+/* ================================================================
+ * Righteous 2026 — Webflow hosted CSS
+ * Loaded from Webflow by a bootstrap inline script.
+ * Must stay self-contained and absolute (served from Vercel,
+ * used on webflow.io / righteous.studio).
+ * ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Canela';
+  src: url('https://righteous-2026-3l2o.vercel.app/fonts/Canela-Black.woff2') format('woff2'),
+       url('https://righteous-2026-3l2o.vercel.app/fonts/Canela-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Prevent native scroll restoration flash. Lenis overrides this anyway. */
+html { scroll-behavior: auto; }
+
+/* Webflow ships its own reset; only nudge the things our layout assumes. */
+body {
+  margin: 0;
+  background-color: #ededed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure spacers are truly invisible and inert. */
+[data-hero-initial-spacer],
+[data-hero-spacer] {
+  pointer-events: none;
+}
+
+/* The hero sits behind all scrolled content. */
+[data-hero] { z-index: 1; }
+
+/* Work section slides over the hero. */
+.work-section { z-index: 2; position: relative; }
+
+/* Hero letters need whitespace:nowrap so kerning margins don't wrap. */
+[data-hero-wordmark] { white-space: nowrap; }
+
+/* Images injected by JS are absolutely positioned; guarantee fill. */
+[data-hero-image-container] > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: none;
+}
+
+/* Hide the off-canvas menu panel by default so it doesn't intercept clicks
+ * before GSAP initializes it. The animation timeline sets display:flex. */
+[data-menu-panel] { display: none; }
+
+/* Menu link wrappers: the JS-driven translateY(100%) needs overflow-hidden
+ * parents to clip them while they're hidden. */
+[data-menu-links] .menu-link {
+  will-change: transform, opacity;
+}
